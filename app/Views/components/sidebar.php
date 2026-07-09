@@ -40,6 +40,20 @@
                     <span>Produk</span>
                 </a>
             </li><!-- End Produk Nav --> 
+
+            <li class="nav-item">
+                <a class="nav-link <?php echo (uri_string() == 'diskon') ? "" : "collapsed" ?>" href="diskon">
+                    <i class="bi bi-tag"></i>
+                    <span>Diskon</span>
+                </a>
+            </li><!-- End Diskon Nav --> 
+
+            <li class="nav-item">
+                <a class="nav-link <?php echo (uri_string() == 'pembelian') ? "" : "collapsed" ?>" href="pembelian">
+                    <i class="bi bi-wallet2"></i>
+                    <span>Pembelian</span>
+                </a>
+            </li><!-- End Pembelian Nav --> 
         <?php
         }
         ?> 

@@ -16,6 +16,15 @@
     </form>
   </div><!-- End Search Bar -->
 
+  <?php if (session()->has('discount_today')): ?>
+    <div class="ms-3 d-none d-md-block">
+      <span class="badge bg-success p-2" id="discount-banner" style="font-size: 0.85rem;">
+        <i class="bi bi-tag-fill me-1"></i>
+        Hari ini ada diskon IDR <?= number_format(session()->get('discount_today'), 0, ',', '.') ?> per item
+      </span>
+    </div>
+  <?php endif; ?>
+
   <nav class="header-nav ms-auto">
     <ul class="d-flex align-items-center">
 

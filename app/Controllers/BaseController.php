@@ -41,5 +41,23 @@ abstract class BaseController extends Controller
 
         // Preload any models, libraries, etc, here.
         // $this->session = service('session');
+
+        // Check and store active daily discount in session
+        try {
+            $db = \Config\Database::connect();
+            if ($db->tableExists('discount')) {
+                $discountModel = new \App\Models\DiscountModel();
+                $todayDiscount = $discountModel->where('tanggal', date('Y-m-d'))->first();
+                if ($todayDiscount) {
+                    session()->set('discount_today', $todayDiscount['nominal']);
+                } else {
+                    session()->remove('discount_today');
+                }
+            } else {
+                session()->remove('discount_today');
+            }
+        } catch (\Throwable $e) {
+            // Ignore database/migration initialization errors
+        }
     }
 }

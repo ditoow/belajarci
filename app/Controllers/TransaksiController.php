@@ -100,9 +100,14 @@ class TransaksiController extends BaseController
 
     public function checkout()
     {
+        $discountPerItem = (int) session()->get('discount_today', 0);
+        $cartTotal = $this->cart->total();
+        $totalQty = array_sum(array_column($this->cart->contents(), 'qty'));
+
         $data = [
             'items' => $this->cart->contents(),
-            'total' => $this->cart->total()
+            'total' => $cartTotal,
+            'total_discounted' => max($cartTotal - ($discountPerItem * $totalQty), 0),
         ];
 
         return view('v_checkout', $data);
@@ -119,9 +124,12 @@ class TransaksiController extends BaseController
         $db = \Config\Database::connect();
         $db->transStart();
 
+        $discountPerItem = (int) session()->get('discount_today', 0);
+
         $subtotal = 0;
         foreach ($cartItems as $item) {
-            $subtotal += $item['qty'] * $item['price'];
+            $priceAfterDiscount = max($item['price'] - $discountPerItem, 0);
+            $subtotal += $item['qty'] * $priceAfterDiscount;
         }
 
         $ongkir = (int) $this->request->getPost('ongkir');
@@ -142,12 +150,13 @@ class TransaksiController extends BaseController
         $transactionId = $this->transactionModel->getInsertID();
 
         foreach ($cartItems as $item) {
+            $priceAfterDiscount = max($item['price'] - $discountPerItem, 0);
             $this->transactionDetailModel->insert([
                 'transaction_id' => $transactionId,
                 'product_id'     => $item['id'],
                 'jumlah'         => $item['qty'],
-                'diskon'         => 0,
-                'subtotal_harga' => $item['qty'] * $item['price']
+                'diskon'         => $discountPerItem,
+                'subtotal_harga' => $item['qty'] * $priceAfterDiscount
             ]);
         }
 

@@ -66,7 +66,16 @@
                 ?>
                         <tr>
                             <td><?= $item['name'] ?></td>
-                            <td><?= number_to_currency($item['price'], 'IDR') ?></td>
+                            <td>
+                                <?php if (session()->has('discount_today')): 
+                                    $originalPrice = $item['price'] + session()->get('discount_today');
+                                ?>
+                                    <s style="color: red;"><?= number_to_currency($originalPrice, 'IDR') ?></s><br>
+                                    <?= number_to_currency($item['price'], 'IDR') ?>
+                                <?php else: ?>
+                                    <?= number_to_currency($item['price'], 'IDR') ?>
+                                <?php endif; ?>
+                            </td>
                             <td><?= $item['qty'] ?></td>
                             <td><?= number_to_currency($item['price'] * $item['qty'], 'IDR') ?></td>
                         </tr>
